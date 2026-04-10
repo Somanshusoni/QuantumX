@@ -1,0 +1,82 @@
+[
+  {
+    "symbol": "RIL",
+    "name": "Reliance Industries",
+    "total_shares_issued": 6760000000,
+    "eps": 115.5,
+    "debt_to_equity": 0.42,
+    "description": "Conglomerate: Energy, Petrochemicals, Retail, Telecom."
+  },
+  {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services",
+    "total_shares_issued": 3610000000,
+    "eps": 128.4,
+    "debt_to_equity": 0.08,
+    "description": "IT services, consulting and business solutions."
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank",
+    "total_shares_issued": 7590000000,
+    "eps": 85.2,
+    "debt_to_equity": 1.15,
+    "description": "India's largest private sector bank."
+  },
+  {
+    "symbol": "ICICIBANK",
+    "name": "ICICI Bank",
+    "total_shares_issued": 7020000000,
+    "eps": 55.6,
+    "debt_to_equity": 0.95,
+    "description": "Multinational banking and financial services."
+  },
+  {
+    "symbol": "INFY",
+    "name": "Infosys",
+    "total_shares_issued": 4150000000,
+    "eps": 60.2,
+    "debt_to_equity": 0.10,
+    "description": "Global leader in next-generation digital services."
+  },
+  {
+    "symbol": "SBIN",
+    "name": "State Bank of India",
+    "total_shares_issued": 8920000000,
+    "eps": 65.8,
+    "debt_to_equity": 1.25,
+    "description": "Public sector banking and financial services statutory body."
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "name": "Bharti Airtel",
+    "total_shares_issued": 5680000000,
+    "eps": 12.5,
+    "debt_to_equity": 1.30,
+    "description": "Global telecommunications services company."
+  },
+  {
+    "symbol": "ITC",
+    "name": "ITC Limited",
+    "total_shares_issued": 12480000000,
+    "eps": 16.2,
+    "debt_to_equity": 0.0,
+    "description": "FMCG, Hotels, Packaging, Paperboards and Agri-Business."
+  },
+  {
+    "symbol": "LT",
+    "name": "Larsen & Toubro",
+    "total_shares_issued": 1370000000,
+    "eps": 90.5,
+    "debt_to_equity": 1.18,
+    "description": "Engineering, construction, manufacturing, technology."
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "name": "Bajaj Finance",
+    "total_shares_issued": 618000000,
+    "eps": 235.0,
+    "debt_to_equity": 3.8,
+    "description": "Non-banking financial company dealing in consumer finance."
+  }
+]

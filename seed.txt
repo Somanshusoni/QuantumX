@@ -1,0 +1,40 @@
+from database import Company
+
+# --- 🛠️ ADMIN ROUTE: SEED INITIAL COMPANIES ---
+@app.post("/admin/seed-companies")
+def seed_initial_companies(db: Session = Depends(get_db)):
+    # Define the starting companies you want on your exchange
+    starter_companies = [
+        Company(
+            symbol="TATA", 
+            name="Tata Motors", 
+            total_shares_issued=1000000, 
+            market_cap=500000000.0, 
+            description="Leading global automobile manufacturer."
+        ),
+        Company(
+            symbol="RELIANCE", 
+            name="Reliance Industries", 
+            total_shares_issued=5000000, 
+            market_cap=2000000000.0, 
+            description="Massive Indian conglomerate."
+        ),
+        Company(
+            symbol="ZOMATO", 
+            name="Zomato Ltd", 
+            total_shares_issued=800000, 
+            market_cap=100000000.0, 
+            description="Food delivery and restaurant aggregator."
+        )
+    ]
+    
+    count = 0
+    for comp in starter_companies:
+        # Check if it already exists so we don't crash by adding duplicates
+        existing = db.query(Company).filter(Company.symbol == comp.symbol).first()
+        if not existing:
+            db.add(comp)
+            count += 1
+            
+    db.commit()
+    return {"message": f"Successfully added {count} new companies to the exchange."}

@@ -24,6 +24,7 @@ Thumbs.db
 # --- CUSTOM PROJECT FILES TO IGNORE ---
 
 # Scratch and test files
+New folder/
 a2.py
 k.py
 kill.py

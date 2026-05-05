@@ -20,3 +20,26 @@ exchange.db
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# --- CUSTOM PROJECT FILES TO IGNORE ---
+
+# Scratch and test files
+a2.py
+k.py
+kill.py
+patch.py
+pa.py
+seed.py
+about copy.html
+{F56FC9CE-D969-480C-B97F-56836A9841A0}.png
+
+# Reports and Document generation
+Detailed_Project_Report.md
+Final_Detailed_Thesis_Report.html
+Project_Report.md
+Quantum_Exchange_College_Report.docx
+Quantum_Exchange_College_Report.html
+somanqwop.odt
+convert_to_word.py
+generate_report.py
+odt_to_txt.py

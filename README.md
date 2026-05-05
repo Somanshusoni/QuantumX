@@ -11,7 +11,10 @@ Welcome to the Quantum Exchange project! This is a real-time trading platform fe
 ## Getting Started
 
 ### Prerequisites
-Make sure you have Python installed. You can install the required dependencies using:
+1. **Python:** Make sure you have Python installed. Install the required dependencies using:
+2. **Redis:** This project uses Redis for the high-speed matchmaking engine and message brokering. You must have a Redis server running locally.
+   - Download Redis: [https://redis.io/download](https://redis.io/download)
+   - Windows Users: You can install Redis via [WSL (Windows Subsystem for Linux)](https://redis.io/docs/install/install-redis/install-redis-on-windows/) or use a native Windows alternative like [Memurai](https://www.memurai.com/).
 ```bash
 pip install -r req.txt
 ```

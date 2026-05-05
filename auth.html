@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumX | Secure Gateway</title>
+    <script>
+        let currentToken = sessionStorage.getItem("jwt_token");
+        if (currentToken === "null" || currentToken === "undefined") {
+            sessionStorage.removeItem("jwt_token");
+            currentToken = null;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('logout')) {
+            sessionStorage.removeItem("jwt_token");
+            window.history.replaceState({}, document.title, "/"); 
+        } else if (currentToken) {
+            window.location.replace("/exchange");
+        }
+    </script>
+    <style>
+        @font-face {
+    font-family: 'NothingFont';
+    src: url('/static/nothing-font-5x7.otf.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 2. The Nuclear Option: Force EVERYTHING to use this font */
+.brand-name{
+    font-family: 'NothingFont', monospace !important;
+    font-size: 20px !important; /* 🟢 This makes it massive! Change the number until it looks right */
+    letter-spacing: 2px;
+}
+
+        :root { --bg-color: #0f172a; --card-bg: #1e293b; --input-bg: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-green: #10b981; --accent-red: #ef4444; --accent-blue: #3b82f6; --border-color: #334155; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        .split-layout { display: flex; width: 100%; height: 100%; }
+        .promo-side { flex: 1; background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; padding: 8%; position: relative; overflow: hidden; }
+        .promo-content { position: relative; z-index: 10; }
+        .brand-name { font-size: 2.5rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .brand-name svg { width: 40px; height: 40px; fill: var(--accent-green); }
+        .promo-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 10px; color: white; }
+        .promo-text p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-width: 450px; margin-bottom: 30px; }
+        .carousel-container { position: relative; height: 120px; width: 100%; max-width: 450px; }
+        .carousel-item { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transform: translateY(15px); transition: all 0.5s ease-in-out; display: flex; align-items: flex-start; gap: 15px; background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); }
+        .carousel-item.active { opacity: 1; transform: translateY(0); z-index: 2; }
+        .carousel-item .icon { font-size: 1.8rem; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .icon-blue { background: rgba(59, 130, 246, 0.1) !important; border-color: rgba(59, 130, 246, 0.2) !important; }
+        .icon-gold { background: rgba(245, 158, 11, 0.1) !important; border-color: rgba(245, 158, 11, 0.2) !important; }
+        .carousel-item strong { color: white; display: block; font-size: 1.05rem; margin-bottom: 5px; }
+        .carousel-item span { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block; }
+        .illustration { position: absolute; bottom: -50px; right: -50px; width: 600px; opacity: 0.15; animation: float 6s ease-in-out infinite; pointer-events: none; z-index: 1; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        .auth-side { flex: 1; display: flex; justify-content: center; align-items: center; background-color: var(--bg-color); padding: 20px; overflow-y: auto; }
+        .card { background-color: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); width: 100%; max-width: 550px; border: 1px solid var(--border-color); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); border: none; font-size: 1rem; cursor: pointer; padding: 10px; border-bottom: 2px solid transparent; transition: 0.3s; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom: 2px solid var(--accent-green); font-weight: bold; }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        input, select { width: 100%; background: var(--input-bg); border: none; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; outline: none; font-weight: bold; font-size: 1rem; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; color: white; transition: 0.2s; letter-spacing: 1px; background-color: var(--accent-green); }
+        button:hover { background-color: #059669; transform: translateY(-2px); }
+        #sysMsg { text-align: center; font-size: 0.9rem; font-weight: bold; margin-top: 20px; min-height: 20px; }
+        .about-wrapper { max-height: 500px; overflow-y: auto; padding-right: 10px; }
+        .about-card { background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left;}
+        .about-card h4 { color: var(--accent-blue); margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;}
+        ul { padding-left: 20px; margin-top: 10px; color: var(--text-muted); text-align: left; }
+        code { background-color: #000; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #f59e0b; }
+        @media (max-width: 1000px) { .split-layout { flex-direction: column; overflow-y: auto; } .promo-side { padding: 40px 20px; border-right: none; border-bottom: 1px solid var(--border-color); align-items: center; flex: none; text-align: center; } .carousel-container { display: none; } body { height: auto; overflow: auto; } }
+    </style>
+</head>
+<body>
+    <div class="split-layout">
+        <div class="promo-side">
+            <div class="illustration"><svg viewBox="0 0 400 200" width="100%" height="100%"><path d="M0,160 L400,160 M0,110 L400,110 M0,60 L400,60" stroke="#334155" stroke-width="1" stroke-dasharray="5,5" /><rect x="40" y="120" width="30" height="40" fill="#3b82f6" opacity="0.5" rx="4"/><rect x="110" y="90" width="30" height="70" fill="#3b82f6" opacity="0.6" rx="4"/><rect x="180" y="130" width="30" height="30" fill="#ef4444" opacity="0.6" rx="4"/><rect x="250" y="70" width="30" height="90" fill="#3b82f6" opacity="0.7" rx="4"/><rect x="320" y="30" width="30" height="130" fill="#10b981" opacity="1" rx="4"/><path d="M55,100 L125,70 L195,110 L265,50 L335,15" stroke="#10b981" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="promo-content">
+                <div class="brand-name"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> QuantumX</div>
+                <div class="promo-text"><h1>Trade the <br>Future.</h1><p>Institutional-grade matching engine built for scale. Experience the next generation of algorithmic and retail trading.</p></div>
+                <div class="carousel-container" id="featureCarousel">
+                    <div class="carousel-item active"><span class="icon">💸</span><div><strong>Zero Brokerage</strong><span>Keep your profits. 0% Maker fees and ultra-low Taker execution.</span></div></div>
+                    <div class="carousel-item"><span class="icon icon-blue">🌊</span><div><strong>Deep Liquidity</strong><span>Aggregated order books and simulated swarm volume.</span></div></div>
+                    <div class="carousel-item"><span class="icon icon-gold">⚡</span><div><strong>Microsecond Latency</strong><span>Powered by Redis in-memory ZSET execution queues.</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-side">
+            <div class="card">
+                <div class="header"><h3>SECURE PORTAL</h3></div>
+                <div class="tabs">
+                    <button class="tab-btn active" id="btn-login" onclick="switchTab('login')">SIGN IN</button>
+                    <button class="tab-btn" id="btn-reg" onclick="switchTab('reg')">REGISTER</button>
+                    <button class="tab-btn" id="btn-about" onclick="switchTab('about')">ENGINE</button>
+                </div>
+                <div id="form-login" class="form-section active">
+                    <input type="email" id="loginEmail" placeholder="Network Email" autocomplete="off">
+                    <input type="password" id="loginPassword" placeholder="Passcode" autocomplete="off">
+                    <select id="loginRole"><option value="student">Market Terminal</option><option value="admin">System Admin</option></select>
+                    <button onclick="executeLogin()">AUTHENTICATE</button>
+                </div>
+                <div id="form-reg" class="form-section">
+                    <input type="email" id="regEmail" placeholder="Email Address" autocomplete="off">
+                    <input type="password" id="regPassword" placeholder="Create Passcode" autocomplete="off">
+                    <input type="text" id="regPhone" placeholder="Phone Number" autocomplete="off">
+                    <input type="text" id="regAadhaar" placeholder="Gov ID / Document No." autocomplete="off">
+                    <button onclick="executeRegister()">CREATE ACCOUNT</button>
+                </div>
+                <div id="form-about" class="form-section">
+                    <div class="about-wrapper">
+                        <div style="text-align: center; margin-bottom: 20px;"><h2 style="color: white; margin-bottom: 5px;">Stock Exchange Engine</h2><span style="color: var(--text-muted);">Backend architecture specs</span></div>
+                        <div class="about-card" style="background: rgba(0,0,0,0.2);"><h4>Project Overview</h4><p style="color: var(--text-muted); font-size: 0.95rem;">Simulation of a financial exchange demonstrating concurrent requests, state management between persistent databases and in-memory caches, and WebSocket real-time data.</p></div>
+                        <div class="about-card"><h4>1. FastAPI & Redis</h4><p style="color: var(--text-muted); font-size: 0.9rem;">ZSETs (Sorted Sets) handle Order Books for O(log(N)) matching time.</p></div>
+                    </div>
+                </div>
+                <div id="sysMsg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        if (slides.length > 0) setInterval(() => { slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide + 1) % slides.length; slides[currentSlide].classList.add('active'); }, 2500);
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            document.getElementById(`btn-${tab}`).classList.add('active');
+            document.getElementById(`form-${tab}`).classList.add('active');
+            document.getElementById('sysMsg').innerText = ""; 
+        }
+
+        function showMsg(msg, isError = false) {
+            const m = document.getElementById('sysMsg'); m.innerText = msg; m.style.color = isError ? "var(--accent-red)" : "var(--accent-green)";
+        }
+
+        async function executeRegister() {
+            const payload = { email: document.getElementById('regEmail').value, password: document.getElementById('regPassword').value, phone_number: document.getElementById('regPhone').value, aadhaar_number: document.getElementById('regAadhaar').value };
+            try {
+                const res = await fetch("/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                if (res.ok) { showMsg("Account initialized. Awaiting login."); setTimeout(() => switchTab('login'), 2000); } else { const d = await res.json(); showMsg("ERROR: " + d.detail, true); }
+            } catch (e) { showMsg("NETWORK ERROR", true); }
+        }
+
+        async function executeLogin() {
+            const role = document.getElementById('loginRole').value;
+            const formData = new URLSearchParams();
+            formData.append("username", document.getElementById('loginEmail').value);
+            formData.append("password", document.getElementById('loginPassword').value);
+            try {
+                const res = await fetch("/login", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData });
+                if (res.ok) {
+                    const data = await res.json();
+                    showMsg("Authentication Valid. Routing...");
+                    setTimeout(() => {
+                        if (role === "admin") window.location.href = `http://127.0.0.1:8001/?token=${data.access_token}`;
+                        else { sessionStorage.setItem("jwt_token", data.access_token); window.location.href = "/exchange"; }
+                    }, 800);
+                } else { const d = await res.json(); showMsg("DENIED: " + d.detail, true); }
+            } catch (e) { showMsg("NETWORK ERROR", true); }
+        }
+    </script>
+</body>
+</html>

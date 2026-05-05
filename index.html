@@ -3,42 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Offline Terminal</title>
+    <title>QuantumX Terminal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* 🌑 ZERO-DEPENDENCY CUSTOM CSS */
+        /* 1. Import the custom font from your local Python server */
+@font-face {
+    font-family: 'NothingFont';
+    src: url('/static/nothing-font-5x7.otf.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 2. The Nuclear Option: Force EVERYTHING to use this font */
+ .nothingt{
+    font-family: 'NothingFont', monospace !important;
+    font-size: 15px !important; /* 🟢 This makes it massive! Change the number until it looks right */
+    letter-spacing: 2px;
+}
+
+/* Optional: Make the text glow slightly like an old terminal */
+body {
+    text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.3);
+}
         :root {
             --bg-color: #0f172a; --card-bg: #1e293b; --input-bg: #334155;
             --text-main: #f8fafc; --text-muted: #94a3b8;
-            --accent-green: #10b981; --accent-red: #ef4444;
+            --accent-green: #10b981; --accent-red: #ef4444; --accent-blue: #3b82f6;
             --border-color: #334155; --hover-color: #2a374a;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 1.5; }
-        
         .container { max-width: 1200px; margin: 0 auto; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
-        
-        /* 🗂️ THE TAB SYSTEM */
-        .tab-bar { display: flex; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
-        .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 1.1rem; cursor: pointer; padding: 10px 20px; border-bottom: 3px solid transparent; border-radius: 0; width: auto; font-weight: normal; }
-        .tab-btn:hover { color: white; }
+        .tab-bar { display: flex; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap; }
+        .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 1.1rem; cursor: pointer; padding: 10px 20px; border-bottom: 3px solid transparent; width: auto; font-weight: normal; }
         .tab-btn.active { color: white; border-bottom: 3px solid var(--accent-green); font-weight: bold; }
-
-        /* Layout Grid */
         .grid { display: flex; gap: 20px; flex-wrap: wrap; }
         .col-left { flex: 1 1 350px; }
         .col-right { flex: 2 1 500px; }
-
-        /* Components */
         .card { background-color: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
         .card-title { color: var(--text-muted); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; }
-        
-        /* Inputs & Buttons */
         .form-group { display: flex; gap: 10px; margin-bottom: 10px; }
         input, select { width: 100%; background: var(--input-bg); border: none; color: white; padding: 12px; border-radius: 8px; outline: none; font-weight: bold; }
         input:focus, select:focus { box-shadow: 0 0 0 2px var(--accent-green); }
-        
         button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
         .btn-green { background-color: var(--accent-green); }
         .btn-green:hover { background-color: #059669; }
@@ -46,8 +53,8 @@
         .btn-red:hover { background-color: #dc2626; }
         .btn-small { width: auto; padding: 5px 10px; background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
         .btn-small:hover { background: var(--accent-red); color: white; }
-
-        /* Tables */
+        .btn-logout { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); width: auto; padding: 8px 15px; }
+        .btn-logout:hover { background: var(--text-muted); color: var(--bg-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th { text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding: 10px 5px; font-size: 0.75rem; }
         td { padding: 12px 5px; border-bottom: 1px solid var(--border-color); }
@@ -57,52 +64,46 @@
         .text-red { color: var(--accent-red); font-weight: bold; }
         .text-muted { color: var(--text-muted); font-size: 0.8rem; }
         .clickable-row:hover { background-color: var(--hover-color); cursor: pointer; }
+        
+        .about-card { background-color: var(--input-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left;}
+        .about-card h4 { color: var(--accent-blue); margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;}
+        ul { padding-left: 20px; margin-top: 10px; color: var(--text-muted); text-align: left; }
+        li { margin-bottom: 8px; }
+        code { background-color: #000; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #f59e0b; }
 
-        /* Custom Vanilla JS Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); width: 95%; max-width: 1000px; padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .close-btn { background: transparent; color: var(--text-muted); font-size: 1.5rem; border: none; width: auto; padding: 0; cursor: pointer; }
         .close-btn:hover { color: white; }
-        
         .flex-between { display: flex; justify-content: space-between; }
         .flex-gap { display: flex; gap: 20px; align-items: center; }
         .hidden { display: none !important; }
     </style>
+    <script>
+        if (!sessionStorage.getItem("jwt_token")) window.location.replace("/");
+        function systemLogout() { 
+            sessionStorage.removeItem("jwt_token"); 
+            window.location.replace("/?logout=true"); 
+        }
+    </script>
 </head>
 <body>
 
-<div id="login-screen" class="container" style="max-width: 400px; margin-top: 15vh;">
-    <div class="card">
-        <h3 class="text-center" style="margin-bottom: 20px;">SYSTEM LOGIN</h3>
-        <input type="text" id="login-email" placeholder="Email" style="margin-bottom: 15px;">
-        <input type="password" id="login-password" placeholder="Password" style="margin-bottom: 20px;">
-        <button class="btn-green" onclick="performLogin()">AUTHENTICATE</button>
-    </div>
-</div>
+<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
-<div id="app-screen" class="container hidden">
-    
+<div class="container">
     <div class="header">
-        <h2 style="color: var(--text-muted);">⚡ QUANTUM <span style="color: white;">TERMINAL</span></h2>
-        
+        <h2 class="nothingt" style="color: var(--text-muted);" > QUANTUM<span class="nothingt" style="color: white;">X</span> TERMINAL</h2>
         <div class="flex-gap">
-            <div style="position: relative; cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#94a3b8" viewBox="0 0 16 16">
-                  <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
-                </svg>
-                <div style="position: absolute; top: 0; right: -2px; width: 8px; height: 8px; background: var(--accent-red); border-radius: 50%;"></div>
-            </div>
-
-            <div style="border-left: 1px solid var(--border-color); padding-left: 20px; display: flex; gap: 20px;">
+            <div style="border-left: 1px solid var(--border-color); padding-left: 20px; display: flex; gap: 20px; align-items: center;">
                 <div>
-                    <span class="text-muted">FIAT FUNDS</span><br>
-                    <span class="text-green" id="fiat-balance">₹0.00</span>
+                    <span class="text-muted">FIAT FUNDS</span>
+                    <button class="btn-small" style="margin-left: 10px; padding: 2px 6px; font-size: 0.7rem; border-color: var(--accent-green); color: var(--accent-green);" onclick="depositFiat()">+ ADD</button>
+                    <br><span class="text-green" id="fiat-balance">₹0.00</span>
                 </div>
-                <div>
-                    <span class="text-muted">ASSET VALUE</span><br>
-                    <span style="font-weight: bold;" id="asset-value">₹0.00</span>
-                </div>
+                <div><span class="text-muted">ASSET VALUE</span><br><span style="font-weight: bold;" id="asset-value">₹0.00</span></div>
+                <button class="btn-logout" onclick="systemLogout()">LOGOUT</button>
             </div>
         </div>
     </div>
@@ -110,22 +111,18 @@
     <div class="tab-bar">
         <button class="tab-btn active" id="btn-tab-market" onclick="switchTab('market')">TRADING & MARKET</button>
         <button class="tab-btn" id="btn-tab-portfolio" onclick="switchTab('portfolio')">MY PORTFOLIO</button>
+        <button class="tab-btn" id="btn-tab-notifications" onclick="switchTab('notifications')">INBOX</button>
+        <button class="tab-btn" id="btn-tab-about" onclick="switchTab('about')">ENGINE DOCS</button>
     </div>
 
     <div id="view-market" class="grid">
         <div class="col-left">
             <div class="card">
                 <div class="card-title">Execute Trade</div>
-                <input type="text" id="symbol" placeholder="Symbol (e.g. RIL)" style="margin-bottom: 10px;">
+                <input type="text" id="symbol" placeholder="Symbol (e.g. RIL)" style="margin-bottom: 10px;" autocomplete="off">
                 <div class="form-group">
-                    <select id="side">
-                        <option value="BUY">BUY</option>
-                        <option value="SELL">SELL</option>
-                    </select>
-                    <select id="type">
-                        <option value="LIMIT">LIMIT</option>
-                        <option value="MARKET">MARKET</option>
-                    </select>
+                    <select id="side"><option value="BUY">BUY</option><option value="SELL">SELL</option></select>
+                    <select id="type"><option value="LIMIT">LIMIT</option><option value="MARKET">MARKET</option></select>
                 </div>
                 <div class="form-group">
                     <input type="number" id="qty" placeholder="Qty">
@@ -134,45 +131,22 @@
                 <button class="btn-green" id="submitBtn" onclick="placeOrder()" style="margin-top: 10px;">SEND TO ENGINE</button>
             </div>
         </div>
-
         <div class="col-right">
             <div class="card">
-                <div class="flex-between">
-                    <div class="card-title">Live Market</div>
-                    <span class="text-muted">Click row for Details</span>
-                </div>
+                <div class="flex-between"><div class="card-title">Live Market</div><span class="text-muted">Click row for Details</span></div>
                 <div style="overflow-x: auto;">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>TICKER</th>
-                                <th>COMPANY</th>
-                                <th class="text-right">LTP (₹)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="market-body">
-                            <tr><td colspan="3" class="text-center text-muted">Connecting...</td></tr>
-                        </tbody>
+                        <thead><tr><th>TICKER</th><th>COMPANY</th><th class="text-right">LTP (₹)</th></tr></thead>
+                        <tbody id="market-body"><tr><td colspan="3" class="text-center text-muted">Connecting...</td></tr></tbody>
                     </table>
                 </div>
             </div>
-
             <div class="card">
                 <div class="card-title">Active Orders</div>
                 <div style="overflow-x: auto;">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>SIDE</th>
-                                <th>QTY</th>
-                                <th>SYMBOL</th>
-                                <th>PRICE</th>
-                                <th class="text-right">ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-body">
-                            <tr><td colspan="5" class="text-center text-muted">No pending orders.</td></tr>
-                        </tbody>
+                        <thead><tr><th>SIDE</th><th>QTY</th><th>SYMBOL</th><th>PRICE</th><th class="text-right">ACTION</th></tr></thead>
+                        <tbody id="orders-body"><tr><td colspan="5" class="text-center text-muted">No pending orders.</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -184,23 +158,86 @@
             <div class="card-title">Asset Holdings & Performance</div>
             <div style="overflow-x: auto;">
                 <table style="font-size: 1rem;">
-                    <thead>
-                        <tr>
-                            <th>ASSET</th>
-                            <th class="text-center">QUANTITY</th>
-                            <th class="text-right">LTP (LIVE)</th>
-                            <th class="text-right">CURRENT VALUE</th>
-                            <th class="text-right">TOTAL P&L</th>
-                        </tr>
-                    </thead>
-                    <tbody id="portfolio-body">
-                        <tr><td colspan="5" class="text-center text-muted py-5">Loading holdings...</td></tr>
-                    </tbody>
+                    <thead><tr><th>ASSET</th><th class="text-center">QUANTITY</th><th class="text-right">LTP (LIVE)</th><th class="text-right">CURRENT VALUE</th><th class="text-right">TOTAL P&L</th></tr></thead>
+                    <tbody id="portfolio-body"><tr><td colspan="5" class="text-center text-muted py-5">Loading holdings...</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <div id="view-notifications" class="hidden">
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div class="flex-between">
+                <div class="card-title">System Inbox & Alerts</div>
+                <button class="btn-small" style="color: var(--text-muted); border-color: var(--border-color);" onclick="fetchNotifications()">↻ Refresh</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="font-size: 1rem;">
+                    <thead><tr><th style="width: 200px;">DATE & TIME</th><th>TRANSACTION / MESSAGE</th></tr></thead>
+                    <tbody id="notifications-body"><tr><td colspan="2" class="text-center text-muted py-5">Loading secure inbox...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-about" class="hidden">
+        <div class="card" style="max-width: 800px; margin: 0 auto; overflow-y: auto; max-height: 70vh;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: white; margin-bottom: 5px;">Stock Exchange Simulation Engine</h2>
+                <span style="color: var(--text-muted);">A full-stack backend engineering project</span>
+            </div>
+
+            <div class="about-card" style="background: rgba(0,0,0,0.2);">
+                <h4 style="color: var(--text-main); border: none;">Project Overview</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 10px;">This project is a simulation of a financial exchange. It was built to demonstrate how to handle concurrent requests, manage state between a persistent database and an in-memory cache, and process real-time data using WebSockets.</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px;">The system is broken down into three main components:</p>
+                <ul>
+                    <li><strong style="color: white;">The REST API:</strong> Handles user registration, KYC data, and order placement.</li>
+                    <li><strong style="color: white;">The Matching Engine:</strong> A continuous background loop that reads the order book and matches buyers with sellers.</li>
+                    <li><strong style="color: white;">The Bot Swarm:</strong> A separate script that generates automated trading volume to simulate an active market.</li>
+                </ul>
+            </div>
+
+            <h3 style="color: white; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 1.2rem;">Core Libraries & Technologies</h3>
+
+            <div class="about-card">
+                <h4>1. FastAPI</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;"><strong style="color: white;">Use Case:</strong> Building the main web server and REST API endpoints.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;"><strong style="color: white;">Why it was chosen:</strong> FastAPI is built on ASGI (Asynchronous Server Gateway Interface). This allows the server to handle multiple web requests (like order placements) simultaneously without blocking. It also provides built-in support for WebSockets, which is used here to push live trade notifications to the frontend without requiring the user to refresh the page.</p>
+            </div>
+
+            <div class="about-card">
+                <h4 style="color: var(--accent-green);">2. Redis (redis-py)</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;"><strong style="color: white;">Use Case:</strong> The In-Memory Order Book and Message Broker.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;"><strong style="color: white;">Why it was chosen:</strong> Traditional SQL databases are too slow for order matching. This project uses Redis <code>ZSETs</code> (Sorted Sets). When a user places an order, it is added to a Redis ZSET. Redis automatically sorts these orders by price, allowing the Python matching engine to instantly grab the highest bidder and lowest seller in O(log(N)) time. Redis <code>Pub/Sub</code> is also used to pass messages from the background engine to the FastAPI WebSockets.</p>
+            </div>
+
+            <div class="about-card">
+                <h4 style="color: #f59e0b;">3. SQLAlchemy & PostgreSQL / SQLite</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;"><strong style="color: white;">Use Case:</strong> Persistent Data Storage.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;"><strong style="color: white;">Why it was chosen:</strong> SQLAlchemy acts as the ORM (Object-Relational Mapper). While Redis handles the temporary, fast-moving order book, SQLAlchemy manages the permanent records: user credentials, KYC details (Aadhaar/Phone), total fiat balances, and stock holdings. It ensures data integrity so that if the server crashes, users do not lose their portfolios.</p>
+            </div>
+
+            <div class="about-card">
+                <h4 style="color: var(--accent-red);">4. Asyncio & Httpx</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;"><strong style="color: white;">Use Case:</strong> The Automated Trading Swarm.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;"><strong style="color: white;">Why it was chosen:</strong> To simulate a real market, multiple bots need to place orders at the same time. <code>asyncio</code> allows a single Python script to run 10+ bot loops concurrently. <code>httpx</code> is the asynchronous HTTP client the bots use to send network requests to the FastAPI server, behaving exactly like a real user clicking buttons on the frontend.</p>
+            </div>
+
+            <div class="about-card">
+                <h4 style="color: #a855f7;">5. Math & Random</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;"><strong style="color: white;">Use Case:</strong> Price Oscillation Logic.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;"><strong style="color: white;">Why it was chosen:</strong> The bot script uses Python's built-in <code>math.sin()</code> function combined with <code>time.time()</code> to create a sine wave. This mathematical baseline forces the simulated stock prices to naturally drift up and down over time, rather than moving completely randomly, while <code>random.uniform()</code> adds micro-volatility to each tick.</p>
+            </div>
+
+            <h3 style="color: white; margin-top: 20px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 1.2rem;">System Rules</h3>
+            <ul>
+                <li><strong style="color: white;">Financial Safety:</strong> When an order is placed, the required fiat or shares are temporarily moved to a <code>locked</code> state in the database to prevent double-spending.</li>
+                <li><strong style="color: white;">Market Orders:</strong> Implements "Fill-And-Kill" logic. If a market order exhausts available liquidity, the remainder is immediately canceled to prevent infinite slippage.</li>
+                <li><strong style="color: white;">Admin Isolation:</strong> Administrative functions (modifying balances) are decoupled from the public API and run on a separate local port, requiring a database-verified JWT flag.</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="customModal">
@@ -209,364 +246,321 @@
             <h3 style="color: #f59e0b;" id="modal-title">SYMBOL DETAILS</h3>
             <button class="close-btn" onclick="closeModal()">×</button>
         </div>
-        
         <div class="flex-between" style="margin-bottom: 20px;">
-            <div>
-                <span class="text-muted">Company Name</span><br>
-                <strong id="modal-company-name">-</strong>
-            </div>
-            <div class="text-right">
-                <span class="text-muted">Live Price</span><br>
-                <strong class="text-green" style="font-size: 1.5rem;" id="modal-ltp">-</strong>
-            </div>
+            <div><span class="text-muted">Company Name</span><br><strong id="modal-company-name">-</strong></div>
+            <div class="text-right"><span class="text-muted">Live Price</span><br><strong class="text-green" style="font-size: 1.5rem;" id="modal-ltp">-</strong></div>
         </div>
-
         <div style="background: var(--input-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; height: 400px; position: relative;">
             <canvas id="miniChart"></canvas>
         </div>
-        
         <div style="display: flex; gap: 20px; background: var(--input-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; justify-content: space-around; text-align: center;">
             <div><span class="text-muted" style="font-size: 0.8rem;">P/E Ratio</span><br><strong style="font-size: 1.2rem;" id="det-pe">-</strong></div>
             <div><span class="text-muted" style="font-size: 0.8rem;">Debt/Eq</span><br><strong style="font-size: 1.2rem;" id="det-debt">-</strong></div>
             <div><span class="text-muted" style="font-size: 0.8rem;">Mkt Cap</span><br><strong style="font-size: 1.2rem;" id="det-mcap">-</strong></div>
             <div><span class="text-muted" style="font-size: 0.8rem;">Div Yield</span><br><strong style="font-size: 1.2rem;" id="det-div">-</strong></div>
         </div>
-
         <div class="card-title" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">ORDER BOOK</div>
         <div class="grid" style="gap: 10px;">
             <div style="flex: 1; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;">
                 <h5 class="text-green text-center" style="margin-bottom: 10px;">BIDS (BUY)</h5>
-                <table>
-                    <thead><tr><th>Qty</th><th class="text-right">Price</th></tr></thead>
-                    <tbody id="bids-body"></tbody>
-                </table>
+                <table><thead><tr><th>Qty</th><th class="text-right">Price</th></tr></thead><tbody id="bids-body"></tbody></table>
             </div>
             <div style="flex: 1; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px;">
                 <h5 class="text-red text-center" style="margin-bottom: 10px;">ASKS (SELL)</h5>
-                <table>
-                    <thead><tr><th>Qty</th><th class="text-right">Price</th></tr></thead>
-                    <tbody id="asks-body"></tbody>
-                </table>
+                <table><thead><tr><th>Qty</th><th class="text-right">Price</th></tr></thead><tbody id="asks-body"></tbody></table>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-    // --- 📈 CUSTOM VANILLA JS CHARTING ENGINE ---
-
-    // --- 📈 BULLETPROOF VANILLA JS CHARTING ENGINE ---
-   // --- 📈 TRUE TIME-SERIES CANVAS ENGINE ---
-// --- 📈 PRO-TERMINAL CANVAS ENGINE (HUGE & DETAILED) ---
-    // --- 📈 PROFESSIONAL EXTERNAL CHART ENGINE (Chart.js) ---
-    let myChart = null; // Keep track of the chart so we can destroy it before drawing a new one
-
+<script>
+    let myChart = null;
     function drawExternalChart(canvasId, times, prices) {
         const ctx = document.getElementById(canvasId).getContext('2d');
-        
-        // Destroy the old chart if you click a new company
-        if (myChart) {
-            myChart.destroy();
-        }
-
-        // If no data, don't draw
-        if (!prices || prices.length < 2) {
-            return;
-        }
-
-        // Create the beautiful Wall Street terminal chart
+        if (myChart) myChart.destroy();
+        if (!prices || prices.length < 2) return;
         myChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: times, // The X-Axis timestamps
-                datasets: [{
-                    data: prices, // The Y-Axis prices
-                    borderColor: '#10b981', // Neon Green line
-                    backgroundColor: 'rgba(16, 185, 129, 0.15)', // Glowing area underneath
-                    borderWidth: 2,
-                    pointRadius: 0, // Hide dots to make it look like a Bloomberg terminal
-                    pointHitRadius: 10, // Make it easy to hover over
-                    fill: true,
-                    tension: 0.1 // Slight curve to the line
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: false, // Turn off animation for instant loading
-                plugins: {
-                    legend: { display: false }, // Hide the legend
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: { label: function(context) { return '₹' + context.parsed.y.toFixed(2); } }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { color: 'rgba(148, 163, 184, 0.1)' }, // Faint vertical gridlines
-                        ticks: { color: '#94a3b8', maxTicksLimit: 6 } // Auto-space the timestamps!
-                    },
-                    y: {
-                        grid: { color: 'rgba(148, 163, 184, 0.1)' }, // Faint horizontal gridlines
-                        ticks: { color: '#94a3b8', callback: function(value) { return '₹' + value.toFixed(2); } }
-                    }
-                }
-            }
+            data: { labels: times, datasets: [{ data: prices, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', borderWidth: 2, pointRadius: 0, pointHitRadius: 10, fill: true, tension: 0.1 }] },
+            options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(148, 163, 184, 0.1)' }, ticks: { color: '#94a3b8', maxTicksLimit: 6 } }, y: { grid: { color: 'rgba(148, 163, 184, 0.1)' }, ticks: { color: '#94a3b8' } } } }
         });
     }
 
-    // --- TAB SYSTEM LOGIC ---
+    // 🟢 THE FIX FOR TABS STACKING OVER EACH OTHER
     function switchTab(tabName) {
-        // Hide both views
-        document.getElementById('view-market').classList.add('hidden');
-        document.getElementById('view-portfolio').classList.add('hidden');
-        // Remove active class from buttons
-        document.getElementById('btn-tab-market').classList.remove('active');
-        document.getElementById('btn-tab-portfolio').classList.remove('active');
-        
-        // Show selected
-        document.getElementById(`view-${tabName}`).classList.remove('hidden');
+        // 1. Explicitly hide ALL views
+        document.getElementById('view-market').classList.add('hidden'); 
+        document.getElementById('view-portfolio').classList.add('hidden'); 
+        document.getElementById('view-about').classList.add('hidden');
+        document.getElementById('view-notifications').classList.add('hidden');
+
+        // 2. Explicitly remove the blue/green active line from ALL buttons
+        document.getElementById('btn-tab-market').classList.remove('active'); 
+        document.getElementById('btn-tab-portfolio').classList.remove('active'); 
+        document.getElementById('btn-tab-about').classList.remove('active');
+        document.getElementById('btn-tab-notifications').classList.remove('active');
+
+        // 3. Show ONLY the requested tab and highlight its button
+        document.getElementById(`view-${tabName}`).classList.remove('hidden'); 
         document.getElementById(`btn-tab-${tabName}`).classList.add('active');
+
+        if(tabName === 'notifications') {
+            const inboxBtn = document.getElementById('btn-tab-notifications');
+            inboxBtn.style.color = ""; 
+            inboxBtn.innerHTML = 'INBOX'; 
+            fetchNotifications(); 
+        }
     }
 
-    // --- VANILLA MODAL LOGIC ---
     function openModal() { document.getElementById('customModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('customModal').style.display = 'none'; }
     window.onclick = function(event) { if (event.target == document.getElementById('customModal')) closeModal(); }
 
-    // --- STATE MANAGEMENT ---
     let activeOrders = JSON.parse(sessionStorage.getItem("my_orders")) || [];
     let livePrices = {}; 
     const saveOrders = () => sessionStorage.setItem("my_orders", JSON.stringify(activeOrders));
-    const getToken = () => sessionStorage.getItem("jwt_token");
+    
+    // 🟢 FRONTEND FIREWALL
+    const getToken = () => {
+        const token = sessionStorage.getItem("jwt_token");
+        if (!token || token === "null" || token === "undefined") return null;
+        return token;
+    };
 
-    // --- BUTTON COLOR LOGIC ---
+    function systemLogout(showMsg = false) {
+        if (showMsg) alert("SYSTEM: Session expired or corrupted. Returning to Gateway.");
+        sessionStorage.removeItem("jwt_token");
+        window.location.replace("/?logout=true");
+    }
+
     document.getElementById("side").addEventListener("change", function() {
-        const btn = document.getElementById("submitBtn");
-        btn.className = this.value === "BUY" ? "btn-green" : "btn-red";
+        document.getElementById("submitBtn").className = this.value === "BUY" ? "btn-green" : "btn-red";
     });
 
-    // --- AUTHENTICATION ---
-    async function performLogin() {
-        const email = document.getElementById("login-email").value;
-        const pass = document.getElementById("login-password").value;
-        const formData = new URLSearchParams();
-        formData.append("username", email); formData.append("password", pass);
-
-        try {
-            const res = await fetch("/login", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formData });
-            if (res.ok) {
-                const data = await res.json();
-                sessionStorage.setItem("jwt_token", data.access_token);
-                document.getElementById("login-screen").classList.add("hidden");
-                document.getElementById("app-screen").classList.remove("hidden");
-                fetchMarket(); renderOrders(); setInterval(fetchMarket, 2000);
-            } else { alert("Login Failed!"); }
-        } catch (e) { alert("Backend is offline."); }
-    }
-
-    // --- FETCH LIVE MARKET ---
     async function fetchMarket() {
+        const token = getToken();
+        if (!token) return systemLogout(false);
         try {
-            const res = await fetch("/stocks");
-            const data = await res.json();
-            const tbody = document.getElementById("market-body");
-            tbody.innerHTML = "";
-            
+            const res = await fetch("/stocks"); const data = await res.json();
+            const tbody = document.getElementById("market-body"); tbody.innerHTML = "";
             data.market.forEach(stock => {
                 livePrices[stock.symbol] = stock.live_price;
-                tbody.innerHTML += `
-                    <tr class="clickable-row" onclick="fetchOrderBook('${stock.symbol}', '${stock.name}', ${stock.live_price})">
-                        <td style="font-weight: bold;">${stock.symbol}</td>
-                        <td class="text-muted">${stock.name}</td>
-                        <td class="text-right text-green">₹${stock.live_price.toFixed(2)}</td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr class="clickable-row" onclick="fetchOrderBook('${stock.symbol}', '${stock.name}', ${stock.live_price})">
+                    <td style="font-weight: bold;">${stock.symbol}</td><td class="text-muted">${stock.name}</td><td class="text-right text-green">₹${stock.live_price.toFixed(2)}</td></tr>`;
             });
-            fetchPortfolio(); // Recalculate Portfolio P&L Live!
-        } catch (e) { console.error("Market fetch failed"); }
+            fetchPortfolio();
+        } catch (e) {}
     }
 
-    // --- FETCH PORTFOLIO (Fixed Avg Buy Logic) ---
     async function fetchPortfolio() {
+        const token = getToken();
+        if (!token) return;
         try {
-            const res = await fetch("/ui/portfolio", { headers: { "Authorization": `Bearer ${getToken()}` } });
+            const res = await fetch("/ui/portfolio", { headers: { "Authorization": `Bearer ${token}` } });
+            if (res.status === 401) return systemLogout(true);
             if (!res.ok) return;
-            const data = await res.json();
-            
-            let totalAssetValue = 0;
-            const tbody = document.getElementById("portfolio-body");
-            tbody.innerHTML = "";
-
-            if (data.holdings.length === 0) {
-                // Changed colspan to 5!
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-5">No assets owned.</td></tr>`;
-            } else {
+            const data = await res.json(); let totalAssetValue = 0;
+            const tbody = document.getElementById("portfolio-body"); tbody.innerHTML = "";
+            if (data.holdings.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-5">No assets owned.</td></tr>`; } 
+            else {
                 data.holdings.forEach(h => {
-                    const ltp = livePrices[h.symbol] || 0; 
-                    
-                    const avgBuy = parseFloat(h.avg_buy_price) || 0.0;   
-                    
-                    const invested = h.total_qty * avgBuy;
-                    const currentValue = h.total_qty * ltp;
-                    const pnl = currentValue - invested;
-                    
+                    const ltp = livePrices[h.symbol] || 0; const avgBuy = parseFloat(h.avg_buy_price) || 0.0; 
+                    const qty = h.total_qty || h.quantity || h.qty || 0; 
+                    const invested = qty * avgBuy; const currentValue = qty * ltp; const pnl = currentValue - invested;
                     totalAssetValue += currentValue;
-
-                    const pnlColor = pnl >= 0 ? "text-green" : "text-red";
-                    const pnlSign = pnl >= 0 ? "+" : "";
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>
-                                <strong style="font-size: 1.2rem;">${h.symbol}</strong><br>
-                                <span class="text-muted" style="font-size: 0.8rem;">Avg Cost: ₹${avgBuy.toFixed(2)}</span>
-                            </td>
-                            <td class="text-center" style="font-size: 1.2rem;">${h.total_qty}</td>
-                            
-                            <td class="text-right text-green" style="font-size: 1.1rem; font-weight: bold;">₹${ltp.toFixed(2)}</td>
-                            
-                            <td class="text-right" style="font-size: 1.1rem;">₹${currentValue.toFixed(2)}</td>
-                            <td class="text-right ${pnlColor}" style="font-weight: bold; font-size: 1.1rem;">${pnlSign}₹${pnl.toFixed(2)}</td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td><strong style="font-size: 1.2rem;">${h.symbol}</strong><br><span class="text-muted" style="font-size: 0.8rem;">Avg: ₹${avgBuy.toFixed(2)}</span></td>
+                        <td class="text-center" style="font-size: 1.2rem;">${qty}</td><td class="text-right text-green" style="font-size: 1.1rem; font-weight: bold;">₹${ltp.toFixed(2)}</td>
+                        <td class="text-right" style="font-size: 1.1rem;">₹${currentValue.toFixed(2)}</td><td class="text-right ${pnl >= 0 ? 'text-green' : 'text-red'}" style="font-weight: bold; font-size: 1.1rem;">${pnl >= 0 ? '+' : ''}₹${pnl.toFixed(2)}</td></tr>`;
                 });
             }
             document.getElementById("fiat-balance").innerText = `₹${data.fiat_balance.toFixed(2)}`;
             document.getElementById("asset-value").innerText = `₹${totalAssetValue.toFixed(2)}`;
-        } catch (e) { console.error("Portfolio fetch failed"); }
+        } catch (e) {}
     }
 
-    // --- FETCH ORDER BOOK (Modal Fixed) ---
-   // --- FETCH ORDER BOOK, CHART & DETAILS ---
+    async function fetchNotifications() {
+        const token = getToken();
+        if (!token) return;
+        try {
+            const res = await fetch("/notifications", { headers: { "Authorization": `Bearer ${token}` } });
+            if (res.status === 401) return systemLogout(true);
+            if (!res.ok) return;
+            const data = await res.json();
+            const tbody = document.getElementById("notifications-body");
+            tbody.innerHTML = "";
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" class="text-center text-muted py-5">Inbox is empty.</td></tr>`;
+                return;
+            }
+            
+            data.forEach(n => {
+                const dt = n.time ? new Date(n.time).toLocaleString() : "Just now";
+                let msgColor = "white";
+                if (n.message.includes("Bought") || n.message.includes("Deposit")) msgColor = "var(--accent-green)";
+                if (n.message.includes("Sold") || n.message.includes("Withdrew") || n.message.includes("REJECTED")) msgColor = "var(--accent-red)";
+                
+                tbody.innerHTML += `<tr><td class="text-muted">${dt}</td><td style="color: ${msgColor}; font-weight: bold;">${n.message}</td></tr>`;
+            });
+        } catch (e) {
+            document.getElementById("notifications-body").innerHTML = `<tr><td colspan="2" class="text-center text-red py-5">Offline</td></tr>`;
+        }
+    }
+
     async function fetchOrderBook(symbol, name, ltp) {
         document.getElementById("modal-title").innerText = `${symbol} TERMINAL`;
-        document.getElementById("modal-company-name").innerText = name;
-        document.getElementById("modal-ltp").innerText = `₹${ltp.toFixed(2)}`;
-        
-        // 1. Generate stable fake fundamentals based on the symbol string
+        document.getElementById("modal-company-name").innerText = name; document.getElementById("modal-ltp").innerText = `₹${ltp.toFixed(2)}`;
         const hash = symbol.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
-        document.getElementById("det-pe").innerText = Math.abs((hash % 30) + 10).toFixed(1);
-        document.getElementById("det-debt").innerText = Math.abs((hash % 200) / 100).toFixed(2);
-        document.getElementById("det-mcap").innerText = "₹" + Math.abs((hash % 900) + 100) + "B";
-        document.getElementById("det-div").innerText = Math.abs((hash % 50) / 10).toFixed(1) + "%";
-
-        // Reset UI
+        document.getElementById("det-pe").innerText = Math.abs((hash % 30) + 10).toFixed(1); document.getElementById("det-debt").innerText = Math.abs((hash % 200) / 100).toFixed(2);
+        document.getElementById("det-mcap").innerText = "₹" + Math.abs((hash % 900) + 100) + "B"; document.getElementById("det-div").innerText = Math.abs((hash % 50) / 10).toFixed(1) + "%";
         document.getElementById("bids-body").innerHTML = `<tr><td colspan="2" class="text-center text-muted">Loading...</td></tr>`;
         document.getElementById("asks-body").innerHTML = `<tr><td colspan="2" class="text-center text-muted">Loading...</td></tr>`;
         openModal();
-
-        // 2. Fetch the Historical Graph Data from Redis!
+        try { const chartRes = await fetch(`/chart/${symbol}`); if (chartRes.ok) { const chartData = await chartRes.json(); drawExternalChart("miniChart", chartData.times, chartData.prices); } } catch (e) {}
         try {
-            const chartRes = await fetch(`/chart/${symbol}`);
-            if (chartRes.ok) {
-                const chartData = await chartRes.json();
-                // 🛡️ THE FIX: Pass both 'times' and 'prices' to the canvas!
-                drawExternalChart("miniChart", chartData.times, chartData.prices);
-            }
-        } catch (e) { console.error("Chart offline."); }
-
-        // 3. Fetch the Order Book Queue
-        try {
-            const res = await fetch(`/orderbook/${symbol}`);
-            const data = await res.json();
-            const bidsBody = document.getElementById("bids-body");
-            const asksBody = document.getElementById("asks-body");
+            const res = await fetch(`/orderbook/${symbol}`); const data = await res.json();
+            const bidsBody = document.getElementById("bids-body"); const asksBody = document.getElementById("asks-body");
             bidsBody.innerHTML = ""; asksBody.innerHTML = "";
-
-            (data.bids || []).forEach(bid => {
-                const price = Array.isArray(bid) ? bid[0] : (bid.price || bid.Price);
-               const qty = Array.isArray(bid) ? bid[1] : (bid.quantity||bid.Quantity || bid.qty || bid.volume || bid.size || bid.amount ||bid.total_qty|| "-");
+            (data.bids || []).forEach(bid => { const price = Array.isArray(bid) ? bid[0] : (bid.price || bid.Price); const qty = Array.isArray(bid) ? bid[1] : (bid.quantity || bid.Quantity || bid.qty || bid.total_qty || "-");
                 if (price !== undefined) bidsBody.innerHTML += `<tr><td style="color: white;">${qty}</td><td class="text-right text-green">₹${price}</td></tr>`;});
-
-            (data.asks || []).forEach(ask => {
-                const price = Array.isArray(ask) ? ask[0] : (ask.price || ask.Price);
-               const qty = Array.isArray(ask) ? ask[1] : (ask.quantity || ask.qty ||ask.Quantity|| ask.volume || ask.size || ask.amount || ask.total_qty||  "-");
-                if (price !== undefined) asksBody.innerHTML += `<tr><td style="color: white;">${qty}</td><td class="text-right text-red">₹${price}</td></tr>`;
-            });
-            
+            (data.asks || []).forEach(ask => { const price = Array.isArray(ask) ? ask[0] : (ask.price || ask.Price); const qty = Array.isArray(ask) ? ask[1] : (ask.quantity || ask.Quantity || ask.qty || ask.total_qty || "-");
+                if (price !== undefined) asksBody.innerHTML += `<tr><td style="color: white;">${qty}</td><td class="text-right text-red">₹${price}</td></tr>`;});
             if (bidsBody.innerHTML === "") bidsBody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">No Bids</td></tr>`;
             if (asksBody.innerHTML === "") asksBody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">No Asks</td></tr>`;
-
-        } catch (e) { 
-            document.getElementById("bids-body").innerHTML = `<tr><td colspan="2" class="text-center text-red">API Offline</td></tr>`;
-            document.getElementById("asks-body").innerHTML = `<tr><td colspan="2" class="text-center text-red">API Offline</td></tr>`;
-        }
+        } catch (e) {}
     }
-    // --- PLACE ORDER ---
+
     async function placeOrder() {
-        const payload = {
-            symbol: document.getElementById("symbol").value.toUpperCase(),
-            side: document.getElementById("side").value,
-            order_type: document.getElementById("type").value,
-            quantity: parseInt(document.getElementById("qty").value),
-            price: parseFloat(document.getElementById("price").value || 0)
-        };
-
+        const token = getToken();
+        if (!token) return systemLogout();
+        const payload = { symbol: document.getElementById("symbol").value.toUpperCase(), side: document.getElementById("side").value, order_type: document.getElementById("type").value, quantity: parseInt(document.getElementById("qty").value), price: parseFloat(document.getElementById("price").value || 0) };
         try {
-            const res = await fetch("/order", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` },
-                body: JSON.stringify(payload)
-            });
+            const res = await fetch("/order", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify(payload) });
             const result = await res.json();
-
             if (res.ok) {
-                payload.id = result.order_id; 
-                activeOrders.push(payload); saveOrders();
-                renderOrders(); fetchPortfolio();
-                
-                // Show temporary success feedback
-                const btn = document.getElementById("submitBtn");
-                const oldText = btn.innerText;
-                btn.innerText = "ORDER ACCEPTED ✓";
-                setTimeout(() => btn.innerText = oldText, 2000);
+                payload.id = result.order_id; activeOrders.push(payload); saveOrders(); renderOrders(); fetchPortfolio();
+                const btn = document.getElementById("submitBtn"); const oldText = btn.innerText; btn.innerText = "ORDER ACCEPTED ✓"; setTimeout(() => btn.innerText = oldText, 2000);
             } else { alert(`Error: ${result.detail}`); }
         } catch (e) { alert("Failed to connect."); }
     }
 
-    // --- CANCEL ORDER ---
     async function cancelOrder(orderId, symbol, side) {
+        const token = getToken();
+        if (!token) return;
         try {
-            const res = await fetch(`/order/${orderId}?symbol=${symbol}&side=${side}`, { method: "DELETE", headers: { "Authorization": `Bearer ${getToken()}` } });
-            if (res.ok) {
-                activeOrders = activeOrders.filter(o => o.id !== orderId); saveOrders();
-                renderOrders(); setTimeout(fetchPortfolio, 1000);
-            } else { alert("Failed to cancel."); }
-        } catch (e) { alert("Network error."); }
+            const res = await fetch(`/order/${orderId}?symbol=${symbol}&side=${side}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } });
+            if (res.ok) { activeOrders = activeOrders.filter(o => o.id !== orderId); saveOrders(); renderOrders(); setTimeout(fetchPortfolio, 1000); }
+        } catch (e) {}
     }
 
-    // --- RENDER ACTIVE ORDERS ---
     function renderOrders() {
-        const tbody = document.getElementById("orders-body");
-        tbody.innerHTML = "";
-        if (activeOrders.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No pending orders.</td></tr>`;
-            return;
-        }
+        const tbody = document.getElementById("orders-body"); tbody.innerHTML = "";
+        if (activeOrders.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No pending orders.</td></tr>`; return; }
         activeOrders.forEach(order => {
-            const color = order.side === "BUY" ? "text-green" : "text-red";
-            tbody.innerHTML += `
-                <tr>
-                    <td class="${color}" style="font-weight:bold;">${order.side}</td>
-                    <td>${order.quantity}</td>
-                    <td>${order.symbol}</td>
-                    <td class="text-muted">₹${order.price}</td>
-                    <td class="text-right"><button class="btn-small" onclick="cancelOrder('${order.id}', '${order.symbol}', '${order.side}')">X</button></td>
-                </tr>
-            `;
+            const qty = order.quantity || order.qty || "-";
+            tbody.innerHTML += `<tr><td class="${order.side === 'BUY' ? 'text-green' : 'text-red'}" style="font-weight:bold;">${order.side}</td><td>${qty}</td><td>${order.symbol}</td>
+                <td class="text-muted">₹${order.price}</td><td class="text-right"><button class="btn-small" onclick="cancelOrder('${order.id}', '${order.symbol}', '${order.side}')">X</button></td></tr>`;
         });
     }
 
-    // --- AUTO-LOGIN BOUNCER ---
-    if (getToken()) {
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("app-screen").classList.remove("hidden");
-        fetchMarket(); renderOrders(); setInterval(fetchMarket, 2000);
+    let lastNotificationId = 0;
+
+    function showLiveToast(message, isBuy) {
+        const toast = document.createElement("div");
+        const color = isBuy ? "var(--accent-green)" : "var(--accent-red)";
+        
+        toast.style.cssText = `
+            background: var(--card-bg); border-left: 4px solid ${color}; color: white;
+            padding: 15px 20px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            font-weight: bold; font-size: 0.9rem; transform: translateX(100%); opacity: 0;
+            transition: all 0.3s ease-out; display: flex; align-items: center; gap: 10px;
+        `;
+        toast.innerHTML = `<span style="font-size: 1.2rem;">⚡</span> ${message}`;
+        
+        document.getElementById("toast-container").appendChild(toast);
+        
+        setTimeout(() => { toast.style.transform = "translateX(0)"; toast.style.opacity = "1"; }, 10);
+        setTimeout(() => {
+            toast.style.transform = "translateX(100%)"; toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    async function checkLiveAlerts() {
+        const token = getToken();
+        if (!token) return;
+        try {
+            const res = await fetch("/notifications", { headers: { "Authorization": `Bearer ${token}` } });
+            if (res.status === 401) return systemLogout(true);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.length === 0) return;
+
+            const newestId = data[0].id;
+            
+            if (lastNotificationId === 0) {
+                lastNotificationId = newestId;
+                return;
+            }
+
+            if (newestId > lastNotificationId) {
+                const missedAlerts = data.filter(n => n.id > lastNotificationId);
+                
+                missedAlerts.forEach(n => {
+                    const isBuy = n.message.includes("Bought") || n.message.includes("Deposit");
+                    showLiveToast(n.message, isBuy); 
+                });
+
+                lastNotificationId = newestId;
+
+                const inboxBtn = document.getElementById('btn-tab-notifications');
+                inboxBtn.style.color = "white";
+                inboxBtn.innerHTML = 'INBOX <span style="color:var(--accent-green); text-shadow: 0 0 8px var(--accent-green);">●</span>';
+
+                if (!document.getElementById('view-notifications').classList.contains('hidden')) {
+                    fetchNotifications();
+                }
+                
+                fetchPortfolio(); 
+            }
+        } catch (e) {}
+    }
+
+    async function depositFiat() {
+        const token = getToken();
+        if (!token) return systemLogout();
+
+        const amountStr = prompt("SYSTEM: Enter fiat amount to request from Admin (₹):");
+        if (!amountStr) return; 
+        
+        const amount = parseFloat(amountStr);
+        if (isNaN(amount) || amount <= 0) return alert("System Error: Invalid amount.");
+
+        try {
+            const res = await fetch("/deposit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({ amount: amount })
+            });
+
+            if (res.ok) {
+                showLiveToast(`Deposit Request Sent: ₹${amount.toFixed(2)} pending Admin approval.`, true);
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.detail}`);
+            }
+        } catch (e) { alert("Network Error."); }
+    }
+
+    // Initialize Page
+    if(getToken()) {
+        fetchMarket(); 
+        renderOrders(); 
+        setInterval(fetchMarket, 2000);
+        setInterval(checkLiveAlerts, 2000); 
+    } else {
+        systemLogout();
     }
 </script>
-
 </body>
 </html>

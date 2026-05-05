@@ -1,0 +1,202 @@
+[
+    {
+        "symbol": "RELIANCE",
+        "name": "Reliance Industries Limited",
+        "description": "India's largest conglomerate with massive operations in energy, petrochemicals, retail, and telecommunications.",
+        "market_cap": 1985000,
+        "eps": 104.50,
+        "debt_to_equity": 0.42,
+        "base_price": 2950.00,
+        "total_shares": 20000
+    },
+    {
+        "symbol": "TCS",
+        "name": "Tata Consultancy Services",
+        "description": "The crown jewel of the Tata Group and India's largest IT services and consulting company.",
+        "market_cap": 1450000,
+        "eps": 128.40,
+        "debt_to_equity": 0.08,
+        "base_price": 4010.50,
+        "total_shares": 100000
+    },
+    {
+        "symbol": "HDFCBANK",
+        "name": "HDFC Bank Limited",
+        "description": "India's largest private sector bank by assets, offering comprehensive banking and financial services.",
+        "market_cap": 1150000,
+        "eps": 88.20,
+        "debt_to_equity": 0.85,
+        "base_price": 1450.75,
+        "total_shares": 75000
+    },
+    {
+        "symbol": "ICICIBANK",
+        "name": "ICICI Bank Limited",
+        "description": "A leading private sector bank in India with a massive footprint in retail and corporate banking.",
+        "market_cap": 750000,
+        "eps": 65.30,
+        "debt_to_equity": 0.78,
+        "base_price": 1080.20,
+        "total_shares": 60000
+    },
+    {
+        "symbol": "INFY",
+        "name": "Infosys Limited",
+        "description": "A global leader in next-generation digital services, IT consulting, and software development.",
+        "market_cap": 620000,
+        "eps": 62.80,
+        "debt_to_equity": 0.10,
+        "base_price": 1490.60,
+        "total_shares": 40000
+    },
+    {
+        "symbol": "SBIN",
+        "name": "State Bank of India",
+        "description": "A public sector banking behemoth and the largest bank in India by sheer volume of customers and branches.",
+        "market_cap": 680000,
+        "eps": 72.15,
+        "debt_to_equity": 1.10,
+        "base_price": 760.00,
+        "total_shares": 150000
+    },
+    {
+        "symbol": "BHARTIARTL",
+        "name": "Bharti Airtel Limited",
+        "description": "A leading global telecommunications company and major player in India's 5G and broadband revolution.",
+        "market_cap": 710000,
+        "eps": 24.50,
+        "debt_to_equity": 1.45,
+        "base_price": 1220.30,
+        "total_shares": 45000
+    },
+    {
+        "symbol": "ITC",
+        "name": "ITC Limited",
+        "description": "A diversified giant leading in FMCG, hotels, packaging, paperboards, and agribusiness.",
+        "market_cap": 520000,
+        "eps": 16.40,
+        "debt_to_equity": 0.05,
+        "base_price": 415.80,
+        "total_shares": 200000
+    },
+    {
+        "symbol": "LT",
+        "name": "Larsen & Toubro Limited",
+        "description": "India's premier multinational conglomerate focused on EPC projects, high-tech manufacturing, and construction.",
+        "market_cap": 490000,
+        "eps": 95.60,
+        "debt_to_equity": 1.15,
+        "base_price": 3650.00,
+        "total_shares": 25000
+    },
+    {
+        "symbol": "HINDUNILVR",
+        "name": "Hindustan Unilever Limited",
+        "description": "India's largest Fast Moving Consumer Goods (FMCG) company with a portfolio of deeply rooted household brands.",
+        "market_cap": 540000,
+        "eps": 44.20,
+        "debt_to_equity": 0.02,
+        "base_price": 2250.45,
+        "total_shares": 30000
+    },
+    {
+        "symbol": "AXISBANK",
+        "name": "Axis Bank Limited",
+        "description": "One of the first new generation private sector banks in India, offering mid-to-large corporate and retail services.",
+        "market_cap": 320000,
+        "eps": 78.90,
+        "debt_to_equity": 0.88,
+        "base_price": 1050.90,
+        "total_shares": 50000
+    },
+    {
+        "symbol": "KOTAKBANK",
+        "name": "Kotak Mahindra Bank",
+        "description": "A major private bank known for its high-margin retail banking and wealth management services.",
+        "market_cap": 350000,
+        "eps": 74.10,
+        "debt_to_equity": 0.72,
+        "base_price": 1780.25,
+        "total_shares": 22000
+    },
+    {
+        "symbol": "BAJFINANCE",
+        "name": "Bajaj Finance Limited",
+        "description": "A deposit-taking Non-Banking Financial Company (NBFC) dominating the consumer finance and lending space.",
+        "market_cap": 430000,
+        "eps": 205.30,
+        "debt_to_equity": 3.40,
+        "base_price": 7100.00,
+        "total_shares": 15000
+    },
+    {
+        "symbol": "TATAMOTORS",
+        "name": "Tata Motors Limited",
+        "description": "A leading global automobile manufacturer producing commercial vehicles, passenger cars, and owning Jaguar Land Rover.",
+        "market_cap": 325000,
+        "eps": 42.80,
+        "debt_to_equity": 1.65,
+        "base_price": 980.50,
+        "total_shares": 80000
+    },
+    {
+        "symbol": "ASIANPAINT",
+        "name": "Asian Paints Limited",
+        "description": "India's leading paint company and a major player in the home decor and chemical sectors.",
+        "market_cap": 275000,
+        "eps": 58.40,
+        "debt_to_equity": 0.12,
+        "base_price": 2890.10,
+        "total_shares": 18000
+    },
+    {
+        "symbol": "M&M",
+        "name": "Mahindra & Mahindra Ltd",
+        "description": "A multinational automotive manufacturing corporation dominating the tractor and rugged SUV segments.",
+        "market_cap": 240000,
+        "eps": 88.50,
+        "debt_to_equity": 0.45,
+        "base_price": 1950.00,
+        "total_shares": 35000
+    },
+    {
+        "symbol": "MARUTI",
+        "name": "Maruti Suzuki India Ltd",
+        "description": "The undisputed market leader in India's passenger vehicle segment, renowned for reliability and scale.",
+        "market_cap": 380000,
+        "eps": 345.00,
+        "debt_to_equity": 0.05,
+        "base_price": 12500.00,
+        "total_shares": 10000
+    },
+    {
+        "symbol": "SUNPHARMA",
+        "name": "Sun Pharmaceutical Inds",
+        "description": "The largest pharmaceutical company in India and the fourth-largest specialty generic pharmaceutical company globally.",
+        "market_cap": 385000,
+        "eps": 41.20,
+        "debt_to_equity": 0.15,
+        "base_price": 1600.40,
+        "total_shares": 24000
+    },
+    {
+        "symbol": "HCLTECH",
+        "name": "HCL Technologies Limited",
+        "description": "A leading global technology company specializing in IT services, cloud architecture, and software products.",
+        "market_cap": 415000,
+        "eps": 62.10,
+        "debt_to_equity": 0.11,
+        "base_price": 1550.75,
+        "total_shares": 28000
+    },
+    {
+        "symbol": "TITAN",
+        "name": "Titan Company Limited",
+        "description": "A Tata Group company dominating India's organized jewelry, watch, and eyewear markets.",
+        "market_cap": 330000,
+        "eps": 38.50,
+        "debt_to_equity": 0.80,
+        "base_price": 3750.00,
+        "total_shares": 12000
+    }
+]

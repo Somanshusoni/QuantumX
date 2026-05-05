@@ -1,25 +1,28 @@
-from typing import Dict, List
 from fastapi import WebSocket
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: Dict[str, List[WebSocket]] = {}
+        # Stores active connections mapped by company symbol
+        self.active_connections: dict[str, list[WebSocket]] = {}
 
-    async def connect(self, websocket: WebSocket, room_name: str):
+    async def connect(self, websocket: WebSocket, symbol: str):
         await websocket.accept()
-        if room_name not in self.active_connections:
-            self.active_connections[room_name] = []
-        
-        self.active_connections[room_name].append(websocket)
-        print(f"🔌 New public connection to {room_name}. Viewers: {len(self.active_connections[room_name])}")
+        if symbol not in self.active_connections:
+            self.active_connections[symbol] = []
+        self.active_connections[symbol].append(websocket)
 
-    def disconnect(self, websocket: WebSocket, room_name: str):
-        if room_name in self.active_connections:
-            self.active_connections[room_name].remove(websocket)
-            print(f"❌ Disconnected from {room_name}. Viewers: {len(self.active_connections[room_name])}")
-            
-            if len(self.active_connections[room_name]) == 0:
-                del self.active_connections[room_name]
+    def disconnect(self, websocket: WebSocket, symbol: str):
+        if symbol in self.active_connections:
+            self.active_connections[symbol].remove(websocket)
+            if not self.active_connections[symbol]:
+                del self.active_connections[symbol]
 
-# Single instance shared across the whole app
+    async def broadcast(self, message: str, symbol: str):
+        if symbol in self.active_connections:
+            for connection in self.active_connections[symbol]:
+                try:
+                    await connection.send_text(message)
+                except Exception:
+                    self.disconnect(connection, symbol)
+
 manager = ConnectionManager()
